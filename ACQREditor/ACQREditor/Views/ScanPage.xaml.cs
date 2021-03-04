@@ -132,7 +132,7 @@ namespace ACQREditor.Views
         {
             //Data pata consists from above color palette, 0 - 15 indexed number, 4bits per pixel.
             const int size = 32;
-            var bitmap = new SKBitmap(size, size);
+            var bitmap = new SKBitmap(size, size, true);
 
             var pos = new SKPointI(0, 0);
 
@@ -142,10 +142,10 @@ namespace ACQREditor.Views
                 var color1 = CalculateColor(designByte >> 4, colorPalette); // first 4-bits
                 var color2 = CalculateColor(designByte & 0x0F, colorPalette); // last 4-bits
 
-                bitmap.SetPixel(pos.X, pos.Y, color1);
+                bitmap.SetPixel(pos.X, pos.Y, color2);
                 pos = IncrementPosition(pos, size);
 
-                bitmap.SetPixel(pos.X, pos.Y, color2);
+                bitmap.SetPixel(pos.X, pos.Y, color1);
                 pos = IncrementPosition(pos, size);
             }
 
@@ -167,6 +167,9 @@ namespace ACQREditor.Views
 
         private SKColor CalculateColor(int designByte, byte[] colorPalette)
         {
+            if (designByte == 15) // transparent
+                return new SKColor(0, 0, 0, 0);
+
             var colorReference = colorPalette[designByte];
 
             int index;
@@ -176,7 +179,7 @@ namespace ACQREditor.Views
             if (offset == 0x000F)
                 index = 144 + matrix; // grayscale, starts at 145
             else
-                index = (matrix * 9) + offset + 1; // from 9-color matrix
+                index = (matrix * 9) + offset; // from 9-color matrix
 
             var r = pallet_r[index];
             var g = pallet_g[index];
