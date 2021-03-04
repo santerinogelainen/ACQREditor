@@ -1,5 +1,6 @@
 ﻿
 using ACQREditor.Models;
+using SkiaSharp;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -93,7 +94,7 @@ namespace ACQREditor.Views
             };
         }
 
-        private void scanView_OnScanResult(ZXing.Result result)
+        private void scanView_OnScanResult(Result result)
         {
             Device.BeginInvokeOnMainThread(async () =>
             {
@@ -101,9 +102,7 @@ namespace ACQREditor.Views
                 if (result.RawBytes[0] != 0x40 || // byte encoding
                     result.RawBytes[1] != 0x26 || // QR size (12-bit), first 8-bits
                     result.RawBytes[2] >> 4 != 0x0C) // QR size (12-bit), last 4 bits
-                {
-                    return;
-                }
+                    return; // TODO: Error message
 
                 // HACK!!!! to skip 2.5 bytes ( 2 bytes and 4 bits )
                 string byteString = ByteArrayToHexString(result.RawBytes);
@@ -117,31 +116,56 @@ namespace ACQREditor.Views
                     Author = GetString(bytes, 0x2C, 0x3D),
                     Town = GetString(bytes, 0x42, 0x53),
                     RawColorPalette = GetBytes(bytes, 0x58, 0x66),
-                    RawDesignData = GetBytes(bytes, 0x6C, bytes.Length)
+                    RawDesignData = GetBytes(bytes, 0x6C, bytes.Length).Take(512).ToArray()
                 };
 
-                info.RawRGBData = CreateRawRGB(info.RawDesignData, info.RawColorPalette);
+                if (bytes[0x69] != 0x09)
+                    return; // Has to be normal design, TODO: Error message
+
+                info.Bitmap = CreateBitmap(info.RawDesignData, info.RawColorPalette);
 
                 await Navigation.PushAsync(new EditorPage(info));
             });
         }
 
-        private List<Color> CreateRawRGB(byte[] design, byte[] colorPalette)
+        private SKBitmap CreateBitmap(byte[] design, byte[] colorPalette)
         {
             //Data pata consists from above color palette, 0 - 15 indexed number, 4bits per pixel.
-            var rawRGBData = new List<Color>();
+            const int size = 32;
+            var bitmap = new SKBitmap(size, size);
+
+            var pos = new SKPointI(0, 0);
 
             foreach (var designByte in design)
             {
                 // 2 colors per byte, 4 bits per color
-                rawRGBData.Add(CreateRGBColor(designByte >> 4, colorPalette)); // first 4-bits
-                rawRGBData.Add(CreateRGBColor(designByte & 0x0F, colorPalette)); // last 4-bits
+                var color1 = CalculateColor(designByte >> 4, colorPalette); // first 4-bits
+                var color2 = CalculateColor(designByte & 0x0F, colorPalette); // last 4-bits
+
+                bitmap.SetPixel(pos.X, pos.Y, color1);
+                pos = IncrementPosition(pos, size);
+
+                bitmap.SetPixel(pos.X, pos.Y, color2);
+                pos = IncrementPosition(pos, size);
             }
 
-            return rawRGBData;
+            return bitmap;
         }
 
-        private Color CreateRGBColor(int designByte, byte[] colorPalette)
+        private SKPointI IncrementPosition(SKPointI pos, int max)
+        {
+            pos.X++;
+
+            if (pos.X >= max)
+            {
+                pos.X = 0;
+                pos.Y++;
+            }
+
+            return pos;
+        }
+
+        private SKColor CalculateColor(int designByte, byte[] colorPalette)
         {
             var colorReference = colorPalette[designByte];
 
@@ -154,10 +178,11 @@ namespace ACQREditor.Views
             else
                 index = (matrix * 9) + offset + 1; // from 9-color matrix
 
-            return new Color(
-                (double)pallet_r[index] / 255d, 
-                (double)pallet_g[index] / 255d, 
-                (double)pallet_b[index] / 255d);
+            var r = pallet_r[index];
+            var g = pallet_g[index];
+            var b = pallet_b[index];
+
+            return new SKColor(r, g, b);
         }
 
         private string GetString(byte[] original, int from, int to)

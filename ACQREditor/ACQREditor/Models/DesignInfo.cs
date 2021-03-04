@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using SkiaSharp;
+using System.Collections.Generic;
 using Xamarin.Forms;
 
 namespace ACQREditor.Models
@@ -13,6 +14,7 @@ namespace ACQREditor.Models
         public byte[] RawColorPalette { get; set; }
         public byte[] RawDesignData { get; set; }
         public List<Color> RawRGBData { get; set; }
+        public SKBitmap Bitmap { get; set; }
 
     }
 }
