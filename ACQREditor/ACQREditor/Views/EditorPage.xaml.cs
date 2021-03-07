@@ -1,4 +1,5 @@
 ﻿using ACQREditor.Models;
+using SkiaSharp;
 using SkiaSharp.Views.Forms;
 using Xamarin.Essentials;
 using Xamarin.Forms;
@@ -11,7 +12,6 @@ namespace ACQREditor.Views
     {
         private DesignInfo Design { get;}
 
-
         public EditorPage(DesignInfo design)
         {
             InitializeComponent();
@@ -20,8 +20,6 @@ namespace ACQREditor.Views
             LoadDesignMetadata();
 
             CanvasView.PaintSurface += OnCanvasViewPaintSurface;
-            CanvasView.WidthRequest = DeviceDisplay.MainDisplayInfo.Width;
-            CanvasView.HeightRequest = DeviceDisplay.MainDisplayInfo.Width;
         }
 
         private void LoadDesignMetadata()
@@ -29,6 +27,17 @@ namespace ACQREditor.Views
             lblTitle.Text = "Title: " + Design.Title;
             lblAuthor.Text = "Author: " + Design.Author;
             lblTown.Text = "Town: " + Design.Town;
+        }
+
+        private SKBitmap RotateBitmap(SKBitmap bitmap, int degrees)
+        {
+            using (var surface = new SKCanvas(bitmap))
+            {
+                surface.RotateDegrees(degrees, bitmap.Width / 2, bitmap.Height / 2);
+                surface.DrawBitmap(bitmap.Copy(), 0, 0);
+            }
+
+            return bitmap;
         }
 
         private void OnCanvasViewPaintSurface(object sender, SKPaintSurfaceEventArgs args)
@@ -39,6 +48,18 @@ namespace ACQREditor.Views
 
             canvas.Scale((float)DeviceDisplay.MainDisplayInfo.Width / 32);
             canvas.DrawBitmap(Design.Bitmap, 0, 0);
+        }
+
+        private void btnRotateCounter_Clicked(object sender, System.EventArgs e)
+        {
+            Design.Bitmap = RotateBitmap(Design.Bitmap, 90);
+            CanvasView.InvalidateSurface();
+        }
+
+        private void btnRotate_Clicked(object sender, System.EventArgs e)
+        {
+            Design.Bitmap = RotateBitmap(Design.Bitmap, 90 * 3);
+            CanvasView.InvalidateSurface();
         }
     }
 }

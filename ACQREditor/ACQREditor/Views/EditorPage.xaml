@@ -8,13 +8,38 @@
              x:Class="ACQREditor.Views.EditorPage">
     <ContentPage.Content>
         <StackLayout>
-            <Label x:Name="lblTitle"></Label>
-            <Label x:Name="lblAuthor"></Label>
-            <Label x:Name="lblTown"></Label>
+            <StackLayout VerticalOptions="Start">
 
-            <skia:SKCanvasView x:Name="CanvasView"
-                HorizontalOptions="CenterAndExpand"
-                VerticalOptions="CenterAndExpand"></skia:SKCanvasView>
+                <Label x:Name="lblTitle"></Label>
+                <Label x:Name="lblAuthor"></Label>
+                <Label x:Name="lblTown"></Label>
+
+            </StackLayout>
+
+
+            <StackLayout VerticalOptions="FillAndExpand">
+                <skia:SKCanvasView x:Name="CanvasView"
+                                   HorizontalOptions="FillAndExpand"
+                                   VerticalOptions="FillAndExpand"
+                                   ></skia:SKCanvasView>
+            </StackLayout>
+
+
+            <StackLayout Orientation="Horizontal" VerticalOptions="End">
+
+                <Button x:Name="btnRotate" 
+                    Text="Rotate clockwise"
+                    BackgroundColor="#2196F3"
+                    HorizontalOptions="CenterAndExpand"
+                    Clicked="btnRotate_Clicked"></Button>
+
+                <Button x:Name="btnRotateCounter" 
+                    Text="Rotate counter-clockwise"
+                    BackgroundColor="#2196F3"
+                    HorizontalOptions="CenterAndExpand"
+                    Clicked="btnRotateCounter_Clicked"></Button>
+            </StackLayout>
+
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>
