@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<ContentView xmlns="http://xamarin.com/schemas/2014/forms" 
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="ACQREditor.Controls.DesignCanvasView"
+             xmlns:skia="clr-namespace:SkiaSharp.Views.Forms;assembly=SkiaSharp.Views.Forms"
+             xmlns:tt="clr-namespace:TouchTracking.Forms;assembly=TouchTracking.Forms">
+  <ContentView.Content>
+        <StackLayout x:Name="Container">
+            <skia:SKCanvasView x:Name="CanvasView"
+                                   HorizontalOptions="FillAndExpand"
+                                   VerticalOptions="FillAndExpand"></skia:SKCanvasView>
+
+            <StackLayout.Effects>
+                <tt:TouchEffect 
+                        Capture="True"
+                        x:Name="ImageControls"
+                        TouchAction="ImageControls_TouchAction"></tt:TouchEffect>
+            </StackLayout.Effects>
+        </StackLayout>
+  </ContentView.Content>
+</ContentView>

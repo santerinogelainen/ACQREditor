@@ -8,6 +8,7 @@
   <ItemGroup>
     <PackageReference Include="SkiaSharp" Version="2.80.2" />
     <PackageReference Include="SkiaSharp.Views.Forms" Version="2.80.2" />
+    <PackageReference Include="TouchTracking.Forms" Version="1.1.0" />
     <PackageReference Include="Xamarin.Forms" Version="5.0.0.2012" />  
     <PackageReference Include="Xamarin.Essentials" Version="1.6.1" />  
     <PackageReference Include="ZXing.Net.Mobile" Version="2.4.1" />  
@@ -15,6 +16,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="Controls\DesignCanvasView.xaml.cs">
+      <DependentUpon>DesignCanvasView.xaml</DependentUpon>
+    </Compile>
     <Compile Update="Views\FrontPage.xaml.cs">
       <DependentUpon>FrontPage.xaml</DependentUpon>
     </Compile>
@@ -25,6 +29,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Update="Controls\DesignCanvasView.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
     <EmbeddedResource Update="Views\EditorPage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
