@@ -1,8 +1,8 @@
-﻿
+﻿using ACQREditor.Extensions;
 using ACQREditor.Models;
+using SkiaSharp;
 using SkiaSharp.Views.Forms;
 using System.Collections.Generic;
-using System.Linq;
 using TouchTracking;
 using Xamarin.Essentials;
 using Xamarin.Forms;
@@ -15,16 +15,18 @@ namespace ACQREditor.Controls
     {
         public DesignInfo Design { get; private set; }
 
-        private DesignPosition Position;
-        private DesignPosition EndPosition;
+        private SKMatrix Matrix;
+        private readonly Dictionary<long, SKPoint> Touches;
 
-        private Dictionary<long, TouchPosition> Touches;
+        private float MaxScale;
+        private float MinScale;
 
         public DesignCanvasView()
         {
             InitializeComponent();
 
-            Touches = new Dictionary<long, TouchPosition>();
+            Matrix = SKMatrix.CreateIdentity();
+            Touches = new Dictionary<long, SKPoint>();
             CanvasView.PaintSurface += OnCanvasViewPaintSurface;
         }
 
@@ -32,12 +34,13 @@ namespace ACQREditor.Controls
         {
             Design = design;
 
-            Position.X = 0;
-            Position.Y = 0;
+            var scale = (float)DeviceDisplay.MainDisplayInfo.Width / Design.Bitmap.Width;
 
-            Position.Scale = (float)DeviceDisplay.MainDisplayInfo.Width / Design.Bitmap.Width;
+            Matrix.ScaleX = scale;
+            Matrix.ScaleY = scale;
 
-            EndPosition = Position;
+            MaxScale = scale * 3;
+            MinScale = scale / 3;
 
             InvalidateSurface();
         }  
@@ -51,23 +54,8 @@ namespace ACQREditor.Controls
 
             canvas.Clear();
 
-            if (Touches.Count == 1)
-            {
-                var touch = Touches.First().Value; // TODO: Multitouch (up to 2) moving
-
-                if (touch.CurrentAction == TouchActionType.Moved)
-                {
-                    Position.X = EndPosition.X - ((touch.StartPoint.X - touch.CurrentPoint.X) / (Position.Scale / 2));
-                    Position.Y = EndPosition.Y - ((touch.StartPoint.Y - touch.CurrentPoint.Y) / (Position.Scale / 2));
-                }
-                else
-                {
-                    Position = EndPosition;
-                }
-            }
-
-            canvas.Scale(Position.Scale);
-            canvas.DrawBitmap(Design.Bitmap, Position.X, Position.Y);
+            canvas.SetMatrix(Matrix);
+            canvas.DrawBitmap(Design.Bitmap, new SKPoint());
         }
 
         public void InvalidateSurface()
@@ -75,33 +63,90 @@ namespace ACQREditor.Controls
             CanvasView.InvalidateSurface();
         }
 
+        private void MoveOrScaleCanvas(long id, SKPoint point)
+        {
+            if (!Touches.ContainsKey(id))
+                return;
+
+            // Single-finger drag
+            if (Touches.Count == 1)
+            {
+                var prevPoint = Touches[id];
+
+                // Adjust the matrix for the new position
+                Matrix.TransX += point.X - prevPoint.X;
+                Matrix.TransY += point.Y - prevPoint.Y;
+
+                InvalidateSurface();
+            }
+
+            // Double-finger scale and drag
+            else if (Touches.Count >= 2)
+            {
+                // Copy two dictionary keys into array
+                long[] keys = new long[Touches.Count];
+                Touches.Keys.CopyTo(keys, 0);
+
+                // Find index of non-moving (pivot) finger
+                int pivotIndex = (keys[0] == id) ? 1 : 0;
+
+                // Get the three points involved in the transform
+                var pivotPoint = Touches[keys[pivotIndex]];
+                var prevPoint = Touches[id];
+                var newPoint = point;
+
+                // Calculate two vectors
+                var oldVector = prevPoint - pivotPoint;
+                var newVector = newPoint - pivotPoint;
+
+                // isotropic scaling
+                float scale = newVector.Magnitude() / oldVector.Magnitude();
+
+                if (!float.IsNaN(scale) && !float.IsInfinity(scale) &&
+                    scale * Matrix.ScaleX <= MaxScale &&
+                    scale * Matrix.ScaleX >= MinScale &&
+                    scale * Matrix.ScaleY <= MaxScale &&
+                    scale * Matrix.ScaleY >= MinScale)
+                {
+                    // If something bad hasn't happened, calculate a scale and translation matrix
+                    var scaleMatrix = SKMatrix.CreateScale(scale, scale, pivotPoint.X, pivotPoint.Y);
+
+                    SKMatrix.PostConcat(ref Matrix, scaleMatrix);
+                    InvalidateSurface();
+                }
+            }
+
+            Touches[id] = point;
+        }
+
         private void ImageControls_TouchAction(object sender, TouchActionEventArgs args)
         {
-            if (!Touches.TryGetValue(args.Id, out var touch))
-                touch = default;
+            // https://docs.microsoft.com/en-us/xamarin/xamarin-forms/user-interface/graphics/skiasharp/transforms/touch
 
-            touch.CurrentAction = args.Type;
+            var point = new SKPoint((float)(CanvasView.CanvasSize.Width * args.Location.X / CanvasView.Width),
+                            (float)(CanvasView.CanvasSize.Height * args.Location.Y / CanvasView.Height));
 
             switch (args.Type)
             {
                 case TouchActionType.Pressed:
-                    touch.StartPoint = args.Location;
+                    var rect = new SKRect(0, 0, Design.Bitmap.Width, Design.Bitmap.Height);
+                    rect = Matrix.MapRect(rect);
+
+                    if (rect.Contains(point) && !Touches.ContainsKey(args.Id))
+                        Touches.Add(args.Id, point);
                     break;
 
                 case TouchActionType.Moved:
-                    touch.CurrentPoint = args.Location;
-                    InvalidateSurface();
+                    MoveOrScaleCanvas(args.Id, point);
                     break;
 
                 case TouchActionType.Released:
                 case TouchActionType.Exited:
                 case TouchActionType.Cancelled:
-                    EndPosition = Position;
-                    Touches.Remove(args.Id);
+                    if (Touches.ContainsKey(args.Id))
+                        Touches.Remove(args.Id);
                     return;
             }
-
-            Touches[args.Id] = touch;
         }
     }
 }
