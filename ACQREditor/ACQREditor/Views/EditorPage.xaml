@@ -29,13 +29,13 @@
 
             <StackLayout Orientation="Horizontal" VerticalOptions="End" HorizontalOptions="Center" Padding="10">
                 <ImageButton x:Name="btnRotate" 
-                    Source="rotate_clockwise.png"
+                    Source="rotate_clockwise_white.png"
                     Padding="10"
                     BackgroundColor="{StaticResource Primary}"
                     Clicked="btnRotate_Clicked"></ImageButton>
 
                 <ImageButton x:Name="btnRotateCounter" 
-                    Source="rotate_counter_clockwise.png"
+                    Source="rotate_counter_clockwise_white.png"
                     Padding="10"
                     BackgroundColor="{StaticResource Primary}"
                     Clicked="btnRotateCounter_Clicked"></ImageButton>
