@@ -5,7 +5,9 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:cc="clr-namespace:ACQREditor.Controls"
              mc:Ignorable="d"
-             x:Class="ACQREditor.Views.EditorPage">
+             x:Class="ACQREditor.Views.EditorPage"
+             x:Name="Page">
+
     <ContentPage.Content>
         <StackLayout>
             <StackLayout VerticalOptions="Start">
@@ -25,19 +27,18 @@
             </StackLayout>
 
 
-            <StackLayout Orientation="Horizontal" VerticalOptions="End">
+            <StackLayout Orientation="Horizontal" VerticalOptions="End" HorizontalOptions="Center" Padding="10">
+                <ImageButton x:Name="btnRotate" 
+                    Source="rotate_clockwise.png"
+                    Padding="10"
+                    BackgroundColor="{StaticResource Primary}"
+                    Clicked="btnRotate_Clicked"></ImageButton>
 
-                <Button x:Name="btnRotate" 
-                    Text="Rotate clockwise"
-                    BackgroundColor="#2196F3"
-                    HorizontalOptions="CenterAndExpand"
-                    Clicked="btnRotate_Clicked"></Button>
-
-                <Button x:Name="btnRotateCounter" 
-                    Text="Rotate counter-clockwise"
-                    BackgroundColor="#2196F3"
-                    HorizontalOptions="CenterAndExpand"
-                    Clicked="btnRotateCounter_Clicked"></Button>
+                <ImageButton x:Name="btnRotateCounter" 
+                    Source="rotate_counter_clockwise.png"
+                    Padding="10"
+                    BackgroundColor="{StaticResource Primary}"
+                    Clicked="btnRotateCounter_Clicked"></ImageButton>
             </StackLayout>
 
         </StackLayout>

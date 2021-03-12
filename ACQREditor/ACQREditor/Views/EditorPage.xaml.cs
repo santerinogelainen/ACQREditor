@@ -18,6 +18,8 @@ namespace ACQREditor.Views
 
         private void LoadDesignMetadata(DesignInfo design)
         {
+            Page.Title = design.Title;
+
             lblTitle.Text = "Title: " + design.Title;
             lblAuthor.Text = "Author: " + design.Author;
             lblTown.Text = "Town: " + design.Town;
@@ -36,13 +38,13 @@ namespace ACQREditor.Views
 
         private void btnRotateCounter_Clicked(object sender, System.EventArgs e)
         {
-            Canvas.Design.Bitmap = RotateBitmap(Canvas.Design.Bitmap, 90);
+            Canvas.Design.Bitmap = RotateBitmap(Canvas.Design.Bitmap, 90 * 3);
             Canvas.InvalidateSurface();
         }
 
         private void btnRotate_Clicked(object sender, System.EventArgs e)
         {
-            Canvas.Design.Bitmap = RotateBitmap(Canvas.Design.Bitmap, 90 * 3);
+            Canvas.Design.Bitmap = RotateBitmap(Canvas.Design.Bitmap, 90);
             Canvas.InvalidateSurface();
         }
     }

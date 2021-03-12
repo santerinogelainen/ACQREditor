@@ -125,6 +125,8 @@ namespace ACQREditor.Views
                 info.Bitmap = CreateBitmap(info.RawDesignData, info.RawColorPalette);
 
                 await Navigation.PushAsync(new EditorPage(info));
+
+                Navigation.RemovePage(this);
             });
         }
 
