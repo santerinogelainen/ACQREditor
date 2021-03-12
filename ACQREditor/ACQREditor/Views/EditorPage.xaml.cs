@@ -1,4 +1,5 @@
 ﻿using ACQREditor.Models;
+using ACQREditor.Resources;
 using SkiaSharp;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
@@ -20,9 +21,9 @@ namespace ACQREditor.Views
         {
             Page.Title = design.Title;
 
-            lblTitle.Text = "Title: " + design.Title;
-            lblAuthor.Text = "Author: " + design.Author;
-            lblTown.Text = "Town: " + design.Town;
+            lblTitle.Text = Labels.Title + ": " + design.Title;
+            lblAuthor.Text = Labels.Author + ": " + design.Author;
+            lblTown.Text = Labels.Town + ": " + design.Town;
         }
 
         private SKBitmap RotateBitmap(SKBitmap bitmap, int degrees)

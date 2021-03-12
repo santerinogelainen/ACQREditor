@@ -1,5 +1,6 @@
 ﻿
 using ACQREditor.Models;
+using ACQREditor.Resources;
 using SkiaSharp;
 using System;
 using System.Collections.Generic;
@@ -144,7 +145,10 @@ namespace ACQREditor.Views
                 if (result.RawBytes[0] != 0x40 || // byte encoding
                     result.RawBytes[1] != 0x26 || // QR size (12-bit), first 8-bits
                     result.RawBytes[2] >> 4 != 0x0C) // QR size (12-bit), last 4 bits
-                    return; // TODO: Error message
+                {
+                    overlay.BottomText = Labels.OnlyNormalPatternsSupported;
+                    return;
+                }
 
                 // HACK!!!! to skip 2.5 bytes ( 2 bytes and 4 bits )
                 string byteString = ByteArrayToHexString(result.RawBytes);
@@ -162,7 +166,10 @@ namespace ACQREditor.Views
                 };
 
                 if (bytes[0x69] != 0x09)
-                    return; // Has to be normal design, TODO: Error message
+                {
+                    overlay.BottomText = Labels.OnlyNormalPatternsSupported;
+                    return;
+                }
 
                 info.Bitmap = CreateBitmap(info.RawDesignData, info.RawColorPalette);
 

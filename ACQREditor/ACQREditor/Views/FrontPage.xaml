@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:d="http://xamarin.com/schemas/2014/forms/design"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:resources="clr-namespace:ACQREditor.Resources"
              mc:Ignorable="d"
              x:Class="ACQREditor.Views.FrontPage"
              xmlns:vm="clr-namespace:ACQREditor.ViewModels"
@@ -29,7 +30,7 @@
                 <Button
                     x:Name="btnScan"
                     Margin="0,10,0,0" 
-                    Text="Scan QR-code"
+                    Text="{x:Static resources:Labels.ScanQRCode}"
                     Clicked="btnScan_Clicked"
                     BackgroundColor="{StaticResource Primary}"
                     TextColor="White" />

@@ -19,6 +19,11 @@
     <Compile Update="Controls\DesignCanvasView.xaml.cs">
       <DependentUpon>DesignCanvasView.xaml</DependentUpon>
     </Compile>
+    <Compile Update="Resources\Labels.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Labels.resx</DependentUpon>
+    </Compile>
     <Compile Update="Views\FrontPage.xaml.cs">
       <DependentUpon>FrontPage.xaml</DependentUpon>
     </Compile>
@@ -31,6 +36,10 @@
   <ItemGroup>
     <EmbeddedResource Update="Controls\DesignCanvasView.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Labels.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Labels.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Update="Views\EditorPage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>

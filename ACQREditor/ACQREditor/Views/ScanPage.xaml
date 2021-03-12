@@ -4,6 +4,7 @@
              xmlns:d="http://xamarin.com/schemas/2014/forms/design"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:zxing="clr-namespace:ZXing.Net.Mobile.Forms;assembly=ZXing.Net.Mobile.Forms"
+             xmlns:resources="clr-namespace:ACQREditor.Resources"
              mc:Ignorable="d"
              x:Class="ACQREditor.Views.ScanPage">
     <ContentPage.Content>
@@ -16,7 +17,7 @@
                     IsScanning="True"
                     VerticalOptions="FillAndExpand"
                     HorizontalOptions="FillAndExpand"/>
-                <zxing:ZXingDefaultOverlay x:Name="overlay" TopText="Align the QR-Code within the frame" />
+                <zxing:ZXingDefaultOverlay x:Name="overlay" TopText="{x:Static resources:Labels.AlignTheQRCodeWithinTheFrame}" />
             </Grid>
         </StackLayout>
     </ContentPage.Content>
