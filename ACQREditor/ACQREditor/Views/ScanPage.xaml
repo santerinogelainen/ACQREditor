@@ -16,7 +16,7 @@
                     IsScanning="True"
                     VerticalOptions="FillAndExpand"
                     HorizontalOptions="FillAndExpand"/>
-                <zxing:ZXingDefaultOverlay TopText="Align the QR-Code within the frame" />
+                <zxing:ZXingDefaultOverlay x:Name="overlay" TopText="Align the QR-Code within the frame" />
             </Grid>
         </StackLayout>
     </ContentPage.Content>
