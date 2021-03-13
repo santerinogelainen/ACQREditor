@@ -126,6 +126,9 @@
   <data name="OnlyNormalPatternsSupported" xml:space="preserve">
     <value>Only normal patterns are currently supported!</value>
   </data>
+  <data name="Save" xml:space="preserve">
+    <value>Save</value>
+  </data>
   <data name="ScanQRCode" xml:space="preserve">
     <value>Scan QR-code</value>
   </data>

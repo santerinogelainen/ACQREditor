@@ -4,10 +4,20 @@
              xmlns:d="http://xamarin.com/schemas/2014/forms/design"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:cc="clr-namespace:ACQREditor.Controls"
+             xmlns:resources="clr-namespace:ACQREditor.Resources"
              mc:Ignorable="d"
              x:Class="ACQREditor.Views.EditorPage"
              x:Name="Page">
 
+    <ContentPage.ToolbarItems>
+        <ToolbarItem 
+            x:Name="btnSave"
+            Text="{x:Static resources:Labels.Save}"
+            Order="Primary"
+            Priority="0"
+            Clicked="btnSave_Clicked"></ToolbarItem>
+    </ContentPage.ToolbarItems>
+    
     <ContentPage.Content>
         <StackLayout>
             <StackLayout VerticalOptions="Start">

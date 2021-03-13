@@ -48,5 +48,10 @@ namespace ACQREditor.Views
             Canvas.Design.Bitmap = RotateBitmap(Canvas.Design.Bitmap, 90);
             Canvas.InvalidateSurface();
         }
+
+        private async void btnSave_Clicked(object sender, System.EventArgs e)
+        {
+            await Navigation.PushAsync(new SavePage(Canvas.Design));
+        }
     }
 }
