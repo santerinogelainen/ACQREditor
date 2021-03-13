@@ -5,10 +5,12 @@
              xmlns:skia="clr-namespace:SkiaSharp.Views.Forms;assembly=SkiaSharp.Views.Forms"
              xmlns:tt="clr-namespace:TouchTracking.Forms;assembly=TouchTracking.Forms">
   <ContentView.Content>
-        <StackLayout x:Name="Container">
+        <StackLayout x:Name="Container"
+            HorizontalOptions="FillAndExpand"
+            VerticalOptions="FillAndExpand">
             <skia:SKCanvasView x:Name="CanvasView"
-                                   HorizontalOptions="FillAndExpand"
-                                   VerticalOptions="FillAndExpand"></skia:SKCanvasView>
+                    HorizontalOptions="FillAndExpand"
+                    VerticalOptions="FillAndExpand"></skia:SKCanvasView>
 
             <StackLayout.Effects>
                 <tt:TouchEffect 

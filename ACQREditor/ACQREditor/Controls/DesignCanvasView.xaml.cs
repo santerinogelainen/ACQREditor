@@ -77,6 +77,12 @@ namespace ACQREditor.Controls
                 Matrix.TransX += point.X - prevPoint.X;
                 Matrix.TransY += point.Y - prevPoint.Y;
 
+                var height = Matrix.ScaleY * Design.Bitmap.Height;
+                var width = Matrix.ScaleX * Design.Bitmap.Width;
+
+                Matrix.TransX = Matrix.TransX.Clamp(-(width - (width / 4f)), (float)CanvasView.CanvasSize.Width - (width / 4f));
+                Matrix.TransY = Matrix.TransY.Clamp(-(height - (height / 4f)), (float)CanvasView.CanvasSize.Height - (height / 4f));
+
                 InvalidateSurface();
             }
 
