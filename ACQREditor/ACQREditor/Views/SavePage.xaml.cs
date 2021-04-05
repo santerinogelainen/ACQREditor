@@ -1,4 +1,5 @@
-﻿using ACQREditor.Models;
+﻿using ACQREditor.Class;
+using ACQREditor.Models;
 using System.Text;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
@@ -12,16 +13,10 @@ namespace ACQREditor.Views
         {
             InitializeComponent();
 
-            GenerateQRCode(design);
-        }
+            var writer = new QRWriter();
 
-        private void GenerateQRCode(DesignInfo design)
-        {
-            //ISO-8859-1
-
-            // TODO
-
-            //QRCode.BarcodeValue = Encoding.GetEncoding("ISO-8859-1").GetString(design.Bitmap.Bytes);
+            //ISO-8859-1 ????
+            QRCode.BarcodeValue = Encoding.GetEncoding("ISO-8859-1").GetString(writer.Write(design));
         }
     }
 }
